@@ -50,6 +50,9 @@ public class Startup {
     private double plurality = 0.05;
     @Option(name = "-pluralityN")
     private double pluralityN = 0.5;
+    @Option(name = "-mcc")
+    private int mcc = 1;
+    
 
     private void setInputOutput() {
         if (output == null) {
@@ -70,6 +73,7 @@ public class Startup {
     private void setMainParameters() {
         Globals.PLURALITY = this.plurality;
         Globals.PLURALITY_N = this.pluralityN;
+        Globals.MIN_CONS_COV = this.mcc;
     }
 
     private Map<Integer, AtomicLongMap> parse() throws CmdLineException {

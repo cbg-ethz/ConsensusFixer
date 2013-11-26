@@ -29,7 +29,7 @@ import java.util.TreeSet;
  */
 public class Alignment {
 
-    private Map<String, String> wobbles = new HashMap<>();
+    private final Map<String, String> wobbles = new HashMap<>();
     static final byte[] BYTE_BASES = new byte[]{65, 67, 71, 84, 78};
 
     public Alignment() {
