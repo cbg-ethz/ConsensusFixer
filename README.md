@@ -7,7 +7,7 @@ This java command line application computes a consensus sequence with in-frame i
 If you use ConsensusFixer, please cite <i>Töpfer A.</i> https://github.com/armintoepfer/consensusfixer
 
 ### DOWNLOAD:
-Please get the latest binary at https://github.com/armintoepfer/ConsensusFixer/releases/latest
+Please get the latest binary at [releases](https://github.com/armintoepfer/ConsensusFixer/releases/latest).
 
 ### FEATURES:
  - Calls consensus sequence with a minimal coverage `-mcc INT`
@@ -20,7 +20,7 @@ Please get the latest binary at https://github.com/armintoepfer/ConsensusFixer/r
  - Low memory footprint, but only single core, `-s`
 
 ### ISSUES:
-Please open an issue on github or write me a [mail](https://github.com/armintoepfer/ConsensusFixer/master/README.md#contact)
+Please open an issue on github or write me a [mail](https://github.com/armintoepfer/ConsensusFixer/edit/master/README.md#contact)
 
 - - -
 
@@ -60,19 +60,19 @@ Please open an issue on github or write me a [mail](https://github.com/armintoep
  Further help can be showed by running without additional parameters:
   `java -jar ConsensusFixer.jar`
 
-## PREREQUISITES COMPILE (only for dev):
+### PREREQUISITES COMPILE (only for dev):
  - Maven 3 (http://maven.apache.org/)
 
-## INSTALL (only for dev):
+### INSTALL (only for dev):
     cd ConsensusFixer
     mvn -DartifactId=samtools -DgroupId=net.sf -Dversion=1.9.6 -Dpackaging=jar -Dfile=src/main/resources/jars/sam-1.96.jar -DgeneratePom=false install:install-file
     mvn clean package
     java -jar ConsensusFixer/target/ConsensusFixer.jar
 
-# CONTACT:
+## CONTACT:
     Armin Töpfer
     armin.toepfer (at) gmail.com
     http://www.bsse.ethz.ch/cbg/people/toepfera
 
-# LICENSE:
+## LICENSE:
  GNU GPLv3 http://www.gnu.org/licenses/gpl-3.0
