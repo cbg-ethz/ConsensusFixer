@@ -20,7 +20,7 @@ Please get the latest binary at [releases](https://github.com/armintoepfer/Conse
  - Low memory footprint, but only single core, `-s`
 
 ### ISSUES:
-Please open an issue on github or write me a [mail](https://github.com/armintoepfer/ConsensusFixer/edit/master/README.md#contact)
+Please open an issue on github or write me a [mail](https://github.com/armintoepfer/ConsensusFixer/blob/master/README.md#contact)
 
 - - -
 
