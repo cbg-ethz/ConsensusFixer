@@ -35,7 +35,8 @@ public class Globals {
     public static boolean SINGLE_CORE;
     public static double PLURALITY;
     public static double PLURALITY_N;
-    public static int MIN_CONS_COV = 0;
+    public static int MIN_CONS_COV;
+    public static int MIN_INS_COV;
     public static char[] GENOME;
     public static final Map<Integer, AtomicLongMap> ALIGNMENT_MAP = new ConcurrentHashMap<>();
     public static final Map<Integer, Map<Integer, AtomicLongMap>> INSERTION_MAP = new ConcurrentHashMap<>();

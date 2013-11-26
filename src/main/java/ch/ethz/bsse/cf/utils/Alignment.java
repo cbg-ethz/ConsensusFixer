@@ -56,37 +56,77 @@ public class Alignment {
 
     public void parseReads() {
         Map<Integer, String> consensusMap = new HashMap<>();
+        Map<Integer, Map<Integer, String>> insertionMap = new HashMap<>();
         for (Map.Entry<Integer, AtomicLongMap> e : Globals.ALIGNMENT_MAP.entrySet()) {
-            if (e.getValue() == null) {
-                return;
+            singleEntry(e, consensusMap, Globals.MIN_CONS_COV);
+        }
+
+        for (Map.Entry<Integer, Map<Integer, AtomicLongMap>> e : Globals.INSERTION_MAP.entrySet()) {
+            int position = e.getKey();
+            if (!insertionMap.containsKey(position)) {
+                insertionMap.put(position, new HashMap<Integer, String>());
             }
-            Map<Byte, Long> bases = e.getValue().asMap();
-            long max = -1;
-            double sum = 0;
-            char base = ' ';
-            long base_non_gap_max = -1;
-            for (Map.Entry<Byte, Long> se : bases.entrySet()) {
-                long i = se.getValue();
-                sum += i;
-                if (i > max) {
-                    max = i;
-                }
-                if (se.getKey() != GAP && i > base_non_gap_max) {
-                    base_non_gap_max = i;
-                    base = (char) se.getKey().byteValue();
-                }
+            for (Map.Entry<Integer, AtomicLongMap> e2 : e.getValue().entrySet()) {
+                singleEntry(e2, insertionMap.get(position), Globals.MIN_INS_COV);
             }
-            if (max >= Globals.MIN_CONS_COV) {
-                SortedSet<Byte> keys = new TreeSet<>(bases.keySet());
-                if (bases.containsKey(GAP) && bases.get(GAP) / sum > Globals.PLURALITY_N) {
-                    consensusMap.put(e.getKey(), "N");
+        }
+
+        StringBuilder consensus = new StringBuilder();
+        consensus.append(">CONSENSUS\n");
+        if (Globals.GENOME != null) {
+            for (int L = Globals.GENOME.length, i = 0; i < L; i++) {
+                if (consensusMap.containsKey(i)) {
+                    consensus.append(consensusMap.get(i));
                 } else {
-                    if (bases.containsKey(GAP)) {
-                        sum -= bases.get(GAP);
+                    consensus.append(Globals.GENOME[i]);
+                }
+                if (insertionMap.containsKey(i)) {
+                    SortedSet<Integer> insertion_indices = new TreeSet<>(insertionMap.get(i).keySet());
+                    for (int j : insertion_indices) {
+                        consensus.append(insertionMap.get(i).get(j));
                     }
-                    if (Globals.MAJORITY_VOTE) {
-                        consensusMap.put(e.getKey(), String.valueOf(base));
-                    }
+                }
+            }
+        } else {
+            SortedSet<Integer> keys = new TreeSet<>(consensusMap.keySet());
+            for (int i : keys) {
+                consensus.append(consensusMap.get(i));
+            }
+        }
+        Utils.saveFile(Globals.SAVEPATH + "consensus.fasta", consensus.toString());
+    }
+
+    private void singleEntry(Map.Entry<Integer, AtomicLongMap> e, Map<Integer, String> consensusMap, int minimalCoverage) {
+        if (e.getValue() == null) {
+            return;
+        }
+        Map<Byte, Long> bases = e.getValue().asMap();
+        long max = -1;
+        double sum = 0;
+        char base = ' ';
+        long base_non_gap_max = -1;
+        for (Map.Entry<Byte, Long> se : bases.entrySet()) {
+            long i = se.getValue();
+            sum += i;
+            if (i > max) {
+                max = i;
+            }
+            if (se.getKey() != GAP && i > base_non_gap_max) {
+                base_non_gap_max = i;
+                base = (char) se.getKey().byteValue();
+            }
+        }
+        if (sum >= minimalCoverage) {
+            SortedSet<Byte> keys = new TreeSet<>(bases.keySet());
+            if (bases.containsKey(GAP) && bases.get(GAP) / sum > Globals.PLURALITY_N) {
+                consensusMap.put(e.getKey(), "N");
+            } else {
+                if (bases.containsKey(GAP)) {
+                    sum -= bases.get(GAP);
+                }
+                if (Globals.MAJORITY_VOTE) {
+                    consensusMap.put(e.getKey(), String.valueOf(base));
+                } else {
                     StringBuilder w_sb = new StringBuilder();
                     for (Byte b : keys) {
                         if (b != GAP && bases.containsKey(b) && bases.get(b) / sum > Globals.PLURALITY) {
@@ -97,22 +137,5 @@ public class Alignment {
                 }
             }
         }
-        StringBuilder consensus = new StringBuilder();
-        consensus.append(">CONSENSUS\n");
-        if (Globals.GENOME != null) {
-            for (int L = Globals.GENOME.length, i = 0; i < L; i++) {
-                if (consensusMap.containsKey(i)) {
-                    consensus.append(consensusMap.get(i));
-                } else {
-                    consensus.append(Globals.GENOME[i]);
-                }
-            }
-        } else {
-            SortedSet<Integer> keys = new TreeSet<>(consensusMap.keySet());
-            for (int i : keys) {
-                consensus.append(consensusMap.get(i));
-            }
-        }
-        Utils.saveFile(Globals.SAVEPATH + "consensus.fasta", consensus.toString());
     }
 }

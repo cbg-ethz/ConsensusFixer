@@ -18,7 +18,6 @@
 package ch.ethz.bsse.cf.utils;
 
 import ch.ethz.bsse.cf.informationholder.Globals;
-import com.google.common.util.concurrent.AtomicLongMap;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -94,6 +93,7 @@ public class Utils {
         StatusUpdate.getINSTANCE().printForce("Read count\t\t" + size);
         try (SAMFileReader sfr = new SAMFileReader(bam)) {
             if (Globals.SINGLE_CORE) {
+                StatusUpdate.getINSTANCE().println("Computing\t\t");
                 int i = 0;
                 for (SAMRecord r : sfr) {
                     if (i++ % 1000 == 0) {
@@ -103,7 +103,7 @@ public class Utils {
                 }
                 StatusUpdate.getINSTANCE().printForce("Computing\t\t100%");
             } else {
-                StatusUpdate.getINSTANCE().print("Parsing alignment");
+                StatusUpdate.getINSTANCE().println("Parsing alignment");
                 List<List<SAMRecord>> records = new LinkedList();
                 List<SAMRecord> tmp = new LinkedList<>();
                 int c = 0;

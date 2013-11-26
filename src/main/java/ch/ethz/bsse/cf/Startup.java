@@ -21,7 +21,6 @@ import ch.ethz.bsse.cf.informationholder.Globals;
 import ch.ethz.bsse.cf.utils.Alignment;
 import ch.ethz.bsse.cf.utils.StatusUpdate;
 import ch.ethz.bsse.cf.utils.Utils;
-import com.google.common.util.concurrent.AtomicLongMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -52,6 +51,8 @@ public class Startup {
     private double pluralityN = 0.5;
     @Option(name = "-mcc")
     private int mcc = 1;
+    @Option(name = "-mic")
+    private int mic = 1;
     @Option(name = "-m")
     private boolean majority;
     @Option(name = "-s")
@@ -77,6 +78,7 @@ public class Startup {
         Globals.PLURALITY = this.plurality;
         Globals.PLURALITY_N = this.pluralityN;
         Globals.MIN_CONS_COV = this.mcc;
+        Globals.MIN_INS_COV = this.mic;
         Globals.MAJORITY_VOTE = this.majority;
         Globals.SINGLE_CORE = this.singleCore;
     }
@@ -115,7 +117,7 @@ public class Startup {
                 }
                 Globals.GENOME = genomes.keySet().iterator().next().toCharArray();
             }
-
+            parse();
             new Alignment().parseReads();
             System.out.println("");
         } catch (SAMFormatException e) {
@@ -133,8 +135,12 @@ public class Startup {
             System.err.println("  -i INPUT\t\t: Alignment file in BAM format. (required)");
             System.err.println("  -r INPUT\t\t: Reference file in FASTA format.");
             System.err.println("  -o PATH\t\t: Path to the output directory (default: current directory).");
-            System.err.println("  -m \t\t: Majority vote, otherwise allow wobbles.");
             System.err.println("  -S \t\t: Single core mode with low memory footprint.");
+            System.err.println("  -mcc INT\t\t: Minimal coverage to call consensus.");
+            System.err.println("  -mic INT\t\t: Minimal coverage to call insertion.");
+            System.err.println("  -plurality DOUBLE\t: Minimal relative position-wise base occurence to integrate into wobble (default: 0.05).");
+            System.err.println("  -pluralityN DOUBLE\t: Minimal relative position-wise gap occurence call N (default: 0.5).");
+            System.err.println("  -m \t\t: Majority vote respecting pluralityN first, otherwise allow wobbles.");
             System.err.println("");
             System.err.println(" -------------------------");
             System.err.println(" === Technical options ===");

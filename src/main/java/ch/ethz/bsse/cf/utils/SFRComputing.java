@@ -19,7 +19,6 @@ package ch.ethz.bsse.cf.utils;
 
 import ch.ethz.bsse.cf.informationholder.Globals;
 import com.google.common.util.concurrent.AtomicLongMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.sf.samtools.CigarElement;
