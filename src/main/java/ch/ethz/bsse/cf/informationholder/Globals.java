@@ -16,6 +16,10 @@
  */
 package ch.ethz.bsse.cf.informationholder;
 
+import com.google.common.util.concurrent.AtomicLongMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Information holder for all necessary given and inferred parameters.
  *
@@ -33,4 +37,6 @@ public class Globals {
     public static double PLURALITY_N;
     public static int MIN_CONS_COV = 0;
     public static char[] GENOME;
+    public static final Map<Integer, AtomicLongMap> ALIGNMENT_MAP = new ConcurrentHashMap<>();
+    public static final Map<Integer, Map<Integer, AtomicLongMap>> INSERTION_MAP = new ConcurrentHashMap<>();
 }

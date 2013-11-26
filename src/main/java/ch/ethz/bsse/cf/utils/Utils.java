@@ -79,11 +79,7 @@ public class Utils {
         }
     }
 
-    public static Map<Integer, AtomicLongMap> parseInput(String path) {
-        return parseBAMSAM(path);
-    }
-
-    public static Map<Integer, AtomicLongMap> parseBAMSAM(String location) {
+    public static void parseBAM(String location) {
         File bam = new File(location);
         System.out.println("");
         int size = 0;
@@ -96,7 +92,6 @@ public class Utils {
             }
         }
         StatusUpdate.getINSTANCE().printForce("Read count\t\t" + size);
-        final Map<Integer, AtomicLongMap> alignmentMap = new ConcurrentHashMap<>();
         try (SAMFileReader sfr = new SAMFileReader(bam)) {
             if (Globals.SINGLE_CORE) {
                 int i = 0;
@@ -104,7 +99,7 @@ public class Utils {
                     if (i++ % 1000 == 0) {
                         StatusUpdate.getINSTANCE().print("Computing\t\t" + Math.round(((double) i * 100) / size) + "%");
                     }
-                    SFRComputing.single(r, alignmentMap);
+                    SFRComputing.single(r);
                 }
                 StatusUpdate.getINSTANCE().printForce("Computing\t\t100%");
             } else {
@@ -131,14 +126,13 @@ public class Utils {
                     public void run(List<SAMRecord> l) {
 
                         for (SAMRecord r : l) {
-                            SFRComputing.single(r, alignmentMap);
+                            SFRComputing.single(r);
                         }
                         StatusUpdate.getINSTANCE().printForce("Computing\t\t");
                     }
                 });
             }
         }
-        return alignmentMap;
     }
 
     public static Map<String, String> parseHaplotypeFile(String location) {

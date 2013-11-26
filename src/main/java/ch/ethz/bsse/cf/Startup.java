@@ -19,7 +19,7 @@ package ch.ethz.bsse.cf;
 
 import ch.ethz.bsse.cf.informationholder.Globals;
 import ch.ethz.bsse.cf.utils.Alignment;
-import ch.ethz.bsse.cf.utils.Preprocessing;
+import ch.ethz.bsse.cf.utils.StatusUpdate;
 import ch.ethz.bsse.cf.utils.Utils;
 import com.google.common.util.concurrent.AtomicLongMap;
 import java.io.File;
@@ -56,7 +56,6 @@ public class Startup {
     private boolean majority;
     @Option(name = "-s")
     private boolean singleCore;
-    
 
     private void setInputOutput() {
         if (output == null) {
@@ -82,12 +81,12 @@ public class Startup {
         Globals.SINGLE_CORE = this.singleCore;
     }
 
-    private Map<Integer, AtomicLongMap> parse() throws CmdLineException {
+    private void parse() throws CmdLineException {
         if (this.input == null) {
             throw new CmdLineException("No input given");
         }
-        Preprocessing pre = new Preprocessing(input);
-        return pre.getAlignmentReads();
+        Utils.parseBAM(input);
+        StatusUpdate.getINSTANCE().println("Base count\t\t" + Globals.ALIGNMENT_MAP.size());
     }
 
     public void doMain(String[] args) throws IOException {
@@ -104,7 +103,7 @@ public class Startup {
             new File(this.output + File.separator + "support/").mkdirs();
             Utils.appendFile(this.output + File.separator + "support/CMD", sb.toString() + "\n");
             setMainParameters();
-            
+
             if (this.ref != null && !this.ref.isEmpty()) {
                 Map<String, String> genomes = Utils.parseHaplotypeFile(this.ref);
                 if (genomes.size() > 1) {
@@ -116,8 +115,8 @@ public class Startup {
                 }
                 Globals.GENOME = genomes.keySet().iterator().next().toCharArray();
             }
-            
-            new Alignment().parseReads(parse());
+
+            new Alignment().parseReads();
             System.out.println("");
         } catch (SAMFormatException e) {
             System.err.println("");

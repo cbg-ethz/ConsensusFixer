@@ -3,13 +3,14 @@
  *
  * This file is part of ConsensusFixer.
  *
- * ConsensusFixer is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or any later version.
+ * ConsensusFixer is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or any later version.
  *
- * ConsensusFixer is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * ConsensusFixer is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU General Public License along with
  * ConsensusFixer. If not, see <http://www.gnu.org/licenses/>.
@@ -18,7 +19,9 @@ package ch.ethz.bsse.cf.utils;
 
 import ch.ethz.bsse.cf.informationholder.Globals;
 import com.google.common.util.concurrent.AtomicLongMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.sf.samtools.CigarElement;
 import static net.sf.samtools.CigarOperator.D;
 import static net.sf.samtools.CigarOperator.EQ;
@@ -36,7 +39,7 @@ import net.sf.samtools.SAMRecord;
  */
 public class SFRComputing {
 
-    public static void single(SAMRecord samRecord, Map<Integer, AtomicLongMap> alignmentMap) {
+    public static void single(SAMRecord samRecord) {
         try {
             if (samRecord.getAlignmentBlocks().isEmpty() || samRecord.getSupplementaryAlignmentFlag()) {
                 return;
@@ -54,7 +57,7 @@ public class SFRComputing {
                             System.exit(9);
                         }
                         for (int i = 0; i < c.getLength(); i++) {
-                            add(refStart + readStart, samRecord.getReadBases()[readStart], alignmentMap);
+                            add(refStart + readStart, samRecord.getReadBases()[readStart], Globals.ALIGNMENT_MAP);
                             readStart++;
                         }
                         break;
@@ -63,16 +66,19 @@ public class SFRComputing {
                             System.out.println("\nInput alignment is corrupt.\nCIGAR is longer than actual read-length.");
                             System.exit(9);
                         }
+                        for (int i = 0; i < c.getLength(); i++) {
+                            addInsert(refStart + readStart, i, samRecord.getReadBases()[readStart + i], Globals.INSERTION_MAP);
+                        }
                         readStart += c.getLength();
                         break;
                     case D:
                         if (Globals.FORCE_IN_FRAME && c.getLength() % 3 != 0) {
                             for (int i = 0; i < c.getLength(); i++) {
-                                add(refStart + readStart + i, (byte) 0, alignmentMap);
+                                add(refStart + readStart + i, (byte) 0, Globals.ALIGNMENT_MAP);
                             }
                         } else {
                             for (int i = 0; i < c.getLength(); i++) {
-                                add(refStart + readStart + i, (byte) 45, alignmentMap);
+                                add(refStart + readStart + i, (byte) 45, Globals.ALIGNMENT_MAP);
                             }
                         }
                         break;
@@ -113,6 +119,17 @@ public class SFRComputing {
                 alignmentMap.put(position, AtomicLongMap.create());
             }
             alignmentMap.get(position).incrementAndGet(base);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+    }
+
+    private static void addInsert(int position, int insertIndex, byte base, Map<Integer, Map<Integer, AtomicLongMap>> insertionMap) {
+        try {
+            if (!insertionMap.containsKey(position)) {
+                insertionMap.put(position, new ConcurrentHashMap<Integer, AtomicLongMap>());
+            }
+            add(insertIndex, base, insertionMap.get(position));
         } catch (IllegalArgumentException e) {
             System.out.println(e);
         }

@@ -54,9 +54,9 @@ public class Alignment {
         wobbles.put("", "N");
     }
 
-    public void parseReads(Map<Integer, AtomicLongMap> alignmentMap) {
+    public void parseReads() {
         Map<Integer, String> consensusMap = new HashMap<>();
-        for (Map.Entry<Integer, AtomicLongMap> e : alignmentMap.entrySet()) {
+        for (Map.Entry<Integer, AtomicLongMap> e : Globals.ALIGNMENT_MAP.entrySet()) {
             if (e.getValue() == null) {
                 return;
             }
