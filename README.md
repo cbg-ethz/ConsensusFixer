@@ -1,11 +1,47 @@
+# <b>C</b>onsensus<b>F</b>ixer<b>
+
+### CONTENT:
+This java command line application computes a consensus sequence with in-frame insertions and ambiguous nucleotide (wobbles) from ultra deep next-generation sequencing alignments
+
+### CITATION:
+If you use ConsensusFixer, please cite <i>Töpfer A.</i> https://github.com/armintoepfer/consensusfixer
+
+### DOWNLOAD:
+Please get the latest binary at https://github.com/armintoepfer/ConsensusFixer/releases/latest
+
+### FEATURES:
+ - Calls consensus sequence with a minimal coverage `-mcc INT`
+ - Integrates consensus sequence into given reference `-r ref.fasta`
+ - Include insertions with a minimal coverage of `-mic INT`
+ - Optionally, only include in-frame insertions `-f`
+ - Calls amibiguous bases (wobbles) if relative base abundance is above `-plurality DOUBLE`
+ - Calls N if relative gap abundance is above `-pluralityN DOUBLE`
+ - Performs majority vote, respecting pluralityN, `-m`
+ - Low memory footprint, but only single core, `-s`
+
+### ISSUES:
+Please open an issue on github or write me a [mail](https://github.com/armintoepfer/ConsensusFixer/master/README.md#contact)
+
+- - -
+
 #### PREREQUISITES TO RUN:
  - JDK 7 (http://jdk7.java.net/)
 
 ## RUN:  
  `java -jar ConsensusFixer.jar -i alignment.bam -r reference.fasta`  
- Reads need to be properly aligned.
-
- Parameter `-r` is optional. If reference genome is given, consensus sequence is merged into given reference.
+ 
+```
+  -i          INPUT  : Alignment file in BAM format (required).
+  -r          INPUT  : Reference file in FASTA format (optional).
+  -o          PATH   : Path to the output directory (default: current directory).
+  -mcc        INT    : Minimal coverage to call consensus.
+  -mic        INT    : Minimal coverage to call insertion.
+  -plurality  DOUBLE : Minimal relative position-wise base occurence to integrate into wobble (default: 0.05).
+  -pluralityN DOUBLE : Minimal relative position-wise gap occurence call N (default: 0.5).
+  -m                 : Majority vote respecting pluralityN first, otherwise allow wobbles.
+  -f                 : Only allow in frame deletions and insertions.
+  -s                 : Single core mode with low memory footprint.
+```
 
 ## Technical details
 #####To minimize the memory consumption and the number of full garbage collector executions, use:
