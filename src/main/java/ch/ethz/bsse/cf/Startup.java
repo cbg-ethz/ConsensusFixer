@@ -57,6 +57,8 @@ public class Startup {
     private boolean majority;
     @Option(name = "-s")
     private boolean singleCore;
+    @Option(name = "-f")
+    private boolean inFrame;
 
     private void setInputOutput() {
         if (output == null) {
@@ -81,6 +83,7 @@ public class Startup {
         Globals.MIN_INS_COV = this.mic;
         Globals.MAJORITY_VOTE = this.majority;
         Globals.SINGLE_CORE = this.singleCore;
+        Globals.FORCE_IN_FRAME = this.inFrame;
     }
 
     private void parse() throws CmdLineException {
@@ -140,6 +143,7 @@ public class Startup {
             System.err.println("  -plurality DOUBLE\t: Minimal relative position-wise base occurence to integrate into wobble (default: 0.05).");
             System.err.println("  -pluralityN DOUBLE\t: Minimal relative position-wise gap occurence call N (default: 0.5).");
             System.err.println("  -m \t\t\t: Majority vote respecting pluralityN first, otherwise allow wobbles.");
+            System.err.println("  -f \t\t\t: Only allow in frame deletions and insertions.");
             System.err.println("  -s \t\t\t: Single core mode with low memory footprint.");
             System.err.println("");
             System.err.println(" -------------------------");

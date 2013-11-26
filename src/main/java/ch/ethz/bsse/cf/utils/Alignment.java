@@ -71,6 +71,7 @@ public class Alignment {
             }
         }
 
+        StatusUpdate.getINSTANCE().println("-+-");
         StringBuilder consensus = new StringBuilder();
         consensus.append(">CONSENSUS\n");
         if (Globals.GENOME != null) {
@@ -80,10 +81,14 @@ public class Alignment {
                 } else {
                     consensus.append(Globals.GENOME[i]);
                 }
-                if (insertionMap.containsKey(i)) {
+                if (insertionMap.containsKey(i) && !insertionMap.get(i).isEmpty()) {
+                    StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + ":");
                     SortedSet<Integer> insertion_indices = new TreeSet<>(insertionMap.get(i).keySet());
                     for (int j : insertion_indices) {
-                        consensus.append(insertionMap.get(i).get(j));
+                        if (!insertionMap.get(i).get(j).isEmpty()) {
+                            consensus.append(insertionMap.get(i).get(j));
+                            System.out.print(insertionMap.get(i).get(j));
+                        }
                     }
                 }
             }

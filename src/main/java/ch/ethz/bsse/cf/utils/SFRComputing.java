@@ -65,17 +65,15 @@ public class SFRComputing {
                             System.out.println("\nInput alignment is corrupt.\nCIGAR is longer than actual read-length.");
                             System.exit(9);
                         }
-                        for (int i = 0; i < c.getLength(); i++) {
-                            addInsert(refStart + readStart, i, samRecord.getReadBases()[readStart + i], Globals.INSERTION_MAP);
+                        if (!Globals.FORCE_IN_FRAME || (Globals.FORCE_IN_FRAME && c.getLength() % 3 == 0)) {
+                            for (int i = 0; i < c.getLength(); i++) {
+                                addInsert(refStart + readStart, i, samRecord.getReadBases()[readStart + i], Globals.INSERTION_MAP);
+                            }
                         }
                         readStart += c.getLength();
                         break;
                     case D:
-                        if (Globals.FORCE_IN_FRAME && c.getLength() % 3 != 0) {
-                            for (int i = 0; i < c.getLength(); i++) {
-                                add(refStart + readStart + i, (byte) 0, Globals.ALIGNMENT_MAP);
-                            }
-                        } else {
+                        if (!Globals.FORCE_IN_FRAME || (Globals.FORCE_IN_FRAME && c.getLength() % 3 == 0)) {
                             for (int i = 0; i < c.getLength(); i++) {
                                 add(refStart + readStart + i, (byte) 45, Globals.ALIGNMENT_MAP);
                             }

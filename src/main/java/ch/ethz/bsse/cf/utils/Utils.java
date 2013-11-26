@@ -103,7 +103,7 @@ public class Utils {
                 }
                 StatusUpdate.getINSTANCE().printForce("Computing\t\t100%");
             } else {
-                StatusUpdate.getINSTANCE().println("Parsing alignment");
+                StatusUpdate.getINSTANCE().println("Loading BAM");
                 List<List<SAMRecord>> records = new LinkedList();
                 List<SAMRecord> tmp = new LinkedList<>();
                 int c = 0;
@@ -120,7 +120,7 @@ public class Utils {
                     tmp.add(r);
                 }
                 records.add(tmp);
-                StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t100%");
+                StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t100%\n");
                 Parallel.ForEach(records, new LoopBody<List<SAMRecord>>() {
                     @Override
                     public void run(List<SAMRecord> l) {
