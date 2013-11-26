@@ -28,6 +28,7 @@ import java.util.TimeZone;
 public class StatusUpdate {
 
     private String oldOut = "";
+    private String oldTime = "";
     private long start = System.currentTimeMillis();
     private final DateFormat df = new SimpleDateFormat("HH:mm:ss");
     private static final StatusUpdate INSTANCE = new StatusUpdate();
@@ -41,9 +42,11 @@ public class StatusUpdate {
     }
 
     public void print(String s) {
-        if (!oldOut.equals(s)) {
+        String time = time();
+        if (!oldOut.equals(s) && !oldTime.equals(time)) {
             this.oldOut = s;
-            System.out.print("\r" + time() + " " + s);
+            this.oldTime = time;
+            System.out.print("\r" + time + " " + s);
         }
     }
 

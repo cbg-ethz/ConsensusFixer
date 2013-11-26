@@ -24,13 +24,11 @@ import java.util.Map;
  */
 public class Preprocessing {
 
-    private int L;
-    private int N = 0;
     private Map<Integer, AtomicLongMap> alignmentReads;
 
     public Preprocessing(String alignmentPath) {
         alignmentReads = Utils.parseBAMSAM(alignmentPath);
-        StatusUpdate.getINSTANCE().println("Uniques\t\t" + alignmentReads.size());
+        StatusUpdate.getINSTANCE().println("Base count\t\t" + alignmentReads.size());
     }
 
     public Map<Integer, AtomicLongMap> getAlignmentReads() {

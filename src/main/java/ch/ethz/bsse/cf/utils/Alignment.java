@@ -30,6 +30,7 @@ import java.util.TreeSet;
 public class Alignment {
 
     private final Map<String, String> wobbles = new HashMap<>();
+    public static final byte GAP = (byte) 45;
     static final byte[] BYTE_BASES = new byte[]{65, 67, 71, 84, 78};
 
     public Alignment() {
@@ -62,23 +63,33 @@ public class Alignment {
             Map<Byte, Long> bases = e.getValue().asMap();
             long max = -1;
             double sum = 0;
-            for (long i : bases.values()) {
+            char base = ' ';
+            long base_non_gap_max = -1;
+            for (Map.Entry<Byte, Long> se : bases.entrySet()) {
+                long i = se.getValue();
                 sum += i;
                 if (i > max) {
                     max = i;
                 }
+                if (se.getKey() != GAP && i > base_non_gap_max) {
+                    base_non_gap_max = i;
+                    base = (char) se.getKey().byteValue();
+                }
             }
             if (max >= Globals.MIN_CONS_COV) {
                 SortedSet<Byte> keys = new TreeSet<>(bases.keySet());
-                if (bases.containsKey((byte) 45) && bases.get((byte) 45) / sum > Globals.PLURALITY_N) {
+                if (bases.containsKey(GAP) && bases.get(GAP) / sum > Globals.PLURALITY_N) {
                     consensusMap.put(e.getKey(), "N");
                 } else {
-                    if (bases.containsKey((byte) 45)) {
-                        sum -= bases.get((byte) 45);
+                    if (bases.containsKey(GAP)) {
+                        sum -= bases.get(GAP);
+                    }
+                    if (Globals.MAJORITY_VOTE) {
+                        consensusMap.put(e.getKey(), String.valueOf(base));
                     }
                     StringBuilder w_sb = new StringBuilder();
                     for (Byte b : keys) {
-                        if (b != 45 && bases.containsKey(b) && bases.get(b) / sum > Globals.PLURALITY) {
+                        if (b != GAP && bases.containsKey(b) && bases.get(b) / sum > Globals.PLURALITY) {
                             w_sb.append((char) b.byteValue());
                         }
                     }

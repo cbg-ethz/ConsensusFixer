@@ -17,6 +17,7 @@
  */
 package ch.ethz.bsse.cf.utils;
 
+import ch.ethz.bsse.cf.informationholder.Globals;
 import com.google.common.util.concurrent.AtomicLongMap;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -94,37 +95,48 @@ public class Utils {
                 size += meta.getAlignedRecordCount();
             }
         }
-        StatusUpdate.getINSTANCE().printForce("Reads\t\t" + size);
+        StatusUpdate.getINSTANCE().printForce("Read count\t\t" + size);
         final Map<Integer, AtomicLongMap> alignmentMap = new ConcurrentHashMap<>();
         try (SAMFileReader sfr = new SAMFileReader(bam)) {
-            StatusUpdate.getINSTANCE().print("Parsing alignment");
-            List<List<SAMRecord>> records = new LinkedList();
-            List<SAMRecord> tmp = new LinkedList<>();
-            int c = 0;
-            int sum = 0;
-            final int max = (int) Math.ceil(size / Runtime.getRuntime().availableProcessors());
-            for (SAMRecord r : sfr) {
-                if (c++ > max) {
-                    records.add(tmp);
-                    tmp = new LinkedList<>();
-                    StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t" + Math.round(((double) sum * 100) / size) + "%");
-                    sum += c;
-                    c = 0;
-                }
-                tmp.add(r);
-            }
-            records.add(tmp);
-            StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t100%");
-            Parallel.ForEach(records, new LoopBody<List<SAMRecord>>() {
-                @Override
-                public void run(List<SAMRecord> l) {
-
-                    for (SAMRecord r : l) {
-                        SFRComputing.single(r, alignmentMap);
+            if (Globals.SINGLE_CORE) {
+                int i = 0;
+                for (SAMRecord r : sfr) {
+                    if (i++ % 1000 == 0) {
+                        StatusUpdate.getINSTANCE().print("Computing\t\t" + Math.round(((double) i * 100) / size) + "%");
                     }
-                    StatusUpdate.getINSTANCE().printForce("Computing\t\t");
+                    SFRComputing.single(r, alignmentMap);
                 }
-            });
+                StatusUpdate.getINSTANCE().printForce("Computing\t\t100%");
+            } else {
+                StatusUpdate.getINSTANCE().print("Parsing alignment");
+                List<List<SAMRecord>> records = new LinkedList();
+                List<SAMRecord> tmp = new LinkedList<>();
+                int c = 0;
+                int sum = 0;
+                final int max = (int) Math.ceil(size / Runtime.getRuntime().availableProcessors());
+                for (SAMRecord r : sfr) {
+                    if (c++ > max) {
+                        records.add(tmp);
+                        tmp = new LinkedList<>();
+                        StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t" + Math.round(((double) sum * 100) / size) + "%");
+                        sum += c;
+                        c = 0;
+                    }
+                    tmp.add(r);
+                }
+                records.add(tmp);
+                StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t100%");
+                Parallel.ForEach(records, new LoopBody<List<SAMRecord>>() {
+                    @Override
+                    public void run(List<SAMRecord> l) {
+
+                        for (SAMRecord r : l) {
+                            SFRComputing.single(r, alignmentMap);
+                        }
+                        StatusUpdate.getINSTANCE().printForce("Computing\t\t");
+                    }
+                });
+            }
         }
         return alignmentMap;
     }

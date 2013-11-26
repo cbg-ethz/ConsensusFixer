@@ -27,6 +27,8 @@ public class Globals {
     public static int ALIGNMENT_END = Integer.MIN_VALUE;
     public static String SAVEPATH;
     public static boolean FORCE_IN_FRAME;
+    public static boolean MAJORITY_VOTE;
+    public static boolean SINGLE_CORE;
     public static double PLURALITY;
     public static double PLURALITY_N;
     public static int MIN_CONS_COV = 0;
