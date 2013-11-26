@@ -18,14 +18,12 @@
 package ch.ethz.bsse.cf;
 
 import ch.ethz.bsse.cf.informationholder.Globals;
-import ch.ethz.bsse.cf.informationholder.Read;
 import ch.ethz.bsse.cf.utils.Alignment;
 import ch.ethz.bsse.cf.utils.Preprocessing;
 import ch.ethz.bsse.cf.utils.Utils;
 import com.google.common.util.concurrent.AtomicLongMap;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import net.sf.samtools.SAMFormatException;
 import org.kohsuke.args4j.CmdLineException;
@@ -123,7 +121,7 @@ public class Startup {
             System.err.println("USAGE: java -jar ConsensusFixer.jar options...\n");
             System.err.println(" -------------------------");
             System.err.println(" === GENERAL options ===");
-            System.err.println("  -i INPUT\t\t: Alignment file in BAM format.");
+            System.err.println("  -i INPUT\t\t: Alignment file in BAM format. (required)");
             System.err.println("  -r INPUT\t\t: Reference file in FASTA format.");
             System.err.println("  -o PATH\t\t: Path to the output directory (default: current directory).");
             System.err.println("");

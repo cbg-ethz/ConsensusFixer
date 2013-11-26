@@ -1,9 +1,11 @@
 #### PREREQUISITES TO RUN:
  - JDK 7 (http://jdk7.java.net/)
 
-## RUN:
+## RUN:  
  `java -jar ConsensusFixer.jar -i alignment.bam -r reference.fasta`  
- Reads need to be properly aligned.  
+ Reads need to be properly aligned.
+
+ Parameter `-r` is optional. If reference genome is given, consensus sequence is merged into given reference.
 
 ## Technical details
 #####To minimize the memory consumption and the number of full garbage collector executions, use:
