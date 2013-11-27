@@ -79,7 +79,7 @@ public class SFRComputing {
                         break;
                     case S:
                         if (begin) {
-                            refStart += c.getLength();
+                            readStart += c.getLength();
                         }
                         break;
                     case H:
@@ -109,6 +109,9 @@ public class SFRComputing {
     }
 
     private static void add(int position, byte base, Map<Integer, AtomicLongMap> alignmentMap) {
+        if (position == 916 && base == 65) {
+            System.err.println("");
+        }
         try {
             if (!alignmentMap.containsKey(position)) {
                 alignmentMap.put(position, AtomicLongMap.create());

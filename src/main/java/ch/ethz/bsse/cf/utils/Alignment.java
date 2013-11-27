@@ -58,6 +58,9 @@ public class Alignment {
         Map<Integer, String> consensusMap = new HashMap<>();
         Map<Integer, Map<Integer, String>> insertionMap = new HashMap<>();
         for (Map.Entry<Integer, AtomicLongMap> e : Globals.ALIGNMENT_MAP.entrySet()) {
+            if (e.getKey() > 900 && e.getKey()< 920) {
+                System.out.println("");
+            }
             singleEntry(e, consensusMap, Globals.MIN_CONS_COV);
         }
 
