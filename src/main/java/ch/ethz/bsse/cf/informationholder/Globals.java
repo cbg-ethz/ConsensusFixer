@@ -33,6 +33,7 @@ public class Globals {
     public static boolean FORCE_IN_FRAME;
     public static boolean MAJORITY_VOTE;
     public static boolean SINGLE_CORE;
+    public static boolean RM_DEL;
     public static double PLURALITY;
     public static double PLURALITY_N;
     public static int MIN_CONS_COV;

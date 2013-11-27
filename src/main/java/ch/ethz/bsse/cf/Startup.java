@@ -59,6 +59,8 @@ public class Startup {
     private boolean singleCore;
     @Option(name = "-f")
     private boolean inFrame;
+    @Option(name = "-d")
+    private boolean rmDel;
 
     private void setInputOutput() {
         if (output == null) {
@@ -84,6 +86,7 @@ public class Startup {
         Globals.MAJORITY_VOTE = this.majority;
         Globals.SINGLE_CORE = this.singleCore;
         Globals.FORCE_IN_FRAME = this.inFrame;
+        Globals.RM_DEL = this.rmDel;
     }
 
     private void parse() throws CmdLineException {
@@ -135,15 +138,16 @@ public class Startup {
             System.err.println("USAGE: java -jar ConsensusFixer.jar options...\n");
             System.err.println(" -------------------------");
             System.err.println(" === GENERAL options ===");
-            System.err.println("  -i INPUT\t\t: Alignment file in BAM format. (required)");
-            System.err.println("  -r INPUT\t\t: Reference file in FASTA format.");
+            System.err.println("  -i INPUT\t\t: Alignment file in BAM format (required).");
+            System.err.println("  -r INPUT\t\t: Reference file in FASTA format (optional).");
             System.err.println("  -o PATH\t\t: Path to the output directory (default: current directory).");
             System.err.println("  -mcc INT\t\t: Minimal coverage to call consensus.");
             System.err.println("  -mic INT\t\t: Minimal coverage to call insertion.");
             System.err.println("  -plurality DOUBLE\t: Minimal relative position-wise base occurence to integrate into wobble (default: 0.05).");
             System.err.println("  -pluralityN DOUBLE\t: Minimal relative position-wise gap occurence call N (default: 0.5).");
             System.err.println("  -m \t\t\t: Majority vote respecting pluralityN first, otherwise allow wobbles.");
-            System.err.println("  -f \t\t\t: Only allow in frame deletions and insertions.");
+            System.err.println("  -f \t\t\t: Only allow in frame deletions in the reads and insertions in the consensus.");
+            System.err.println("  -d \t\t\t: Remove gaps if they are >= pluralityN.");
             System.err.println("  -s \t\t\t: Single core mode with low memory footprint.");
             System.err.println("");
             System.err.println(" -------------------------");

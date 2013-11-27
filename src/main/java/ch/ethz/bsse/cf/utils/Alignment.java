@@ -123,8 +123,10 @@ public class Alignment {
         }
         if (sum >= minimalCoverage) {
             SortedSet<Byte> keys = new TreeSet<>(bases.keySet());
-            if (bases.containsKey(GAP) && bases.get(GAP) / sum > Globals.PLURALITY_N) {
-                consensusMap.put(e.getKey(), "N");
+            if (bases.containsKey(GAP) && bases.get(GAP) / sum >= Globals.PLURALITY_N) {
+                if (!Globals.RM_DEL) {
+                    consensusMap.put(e.getKey(), "N");
+                }
             } else {
                 if (bases.containsKey(GAP)) {
                     sum -= bases.get(GAP);
@@ -134,7 +136,7 @@ public class Alignment {
                 } else {
                     StringBuilder w_sb = new StringBuilder();
                     for (Byte b : keys) {
-                        if (b != GAP && bases.containsKey(b) && bases.get(b) / sum > Globals.PLURALITY) {
+                        if (b != GAP && bases.containsKey(b) && bases.get(b) / sum >= Globals.PLURALITY) {
                             w_sb.append((char) b.byteValue());
                         }
                     }
