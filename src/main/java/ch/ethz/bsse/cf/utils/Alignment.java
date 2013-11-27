@@ -126,6 +126,8 @@ public class Alignment {
             if (bases.containsKey(GAP) && bases.get(GAP) / sum >= Globals.PLURALITY_N) {
                 if (!Globals.RM_DEL) {
                     consensusMap.put(e.getKey(), "N");
+                } else {
+                    consensusMap.put(e.getKey(), "");
                 }
             } else {
                 if (bases.containsKey(GAP)) {
