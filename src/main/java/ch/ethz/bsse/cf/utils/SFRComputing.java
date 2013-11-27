@@ -73,10 +73,8 @@ public class SFRComputing {
                         readStart += c.getLength();
                         break;
                     case D:
-                        if (!Globals.FORCE_IN_FRAME || (Globals.FORCE_IN_FRAME && c.getLength() % 3 == 0)) {
-                            for (int i = 0; i < c.getLength(); i++) {
-                                add(refStart + readStart + i, (byte) 45, Globals.ALIGNMENT_MAP);
-                            }
+                        for (int i = 0; i < c.getLength(); i++) {
+                            add(refStart + readStart + i, (byte) 45, Globals.ALIGNMENT_MAP);
                         }
                         break;
                     case S:

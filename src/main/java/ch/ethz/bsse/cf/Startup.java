@@ -146,7 +146,7 @@ public class Startup {
             System.err.println("  -plurality DOUBLE\t: Minimal relative position-wise base occurence to integrate into wobble (default: 0.05).");
             System.err.println("  -pluralityN DOUBLE\t: Minimal relative position-wise gap occurence call N (default: 0.5).");
             System.err.println("  -m \t\t\t: Majority vote respecting pluralityN first, otherwise allow wobbles.");
-            System.err.println("  -f \t\t\t: Only allow in frame deletions in the reads and insertions in the consensus.");
+            System.err.println("  -f \t\t\t: Only allow in frame insertions in the consensus.");
             System.err.println("  -d \t\t\t: Remove gaps if they are >= pluralityN.");
             System.err.println("  -s \t\t\t: Single core mode with low memory footprint.");
             System.err.println("");
