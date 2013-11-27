@@ -15,8 +15,9 @@ Please get the latest binary at [releases](https://github.com/armintoepfer/Conse
  - Include insertions with a minimal coverage of `-mic INT`
  - Optionally, only include in-frame insertions `-f`
  - Calls amibiguous bases (wobbles) if relative base abundance is above `-plurality DOUBLE`
- - Calls N if relative gap abundance is above `-pluralityN DOUBLE`
  - Performs majority vote, respecting pluralityN, `-m`
+ - Calls N if relative gap abundance is above `-pluralityN DOUBLE`
+ - Remove gaps if they are >= pluralityN, `-d`
  - Low memory footprint, but only single core, `-s`
 
 ### ISSUES:
@@ -39,7 +40,8 @@ Please open an issue on github or write me a [mail](https://github.com/armintoep
   -plurality  DOUBLE : Minimal relative position-wise base occurence to integrate into wobble (default: 0.05).
   -pluralityN DOUBLE : Minimal relative position-wise gap occurence call N (default: 0.5).
   -m                 : Majority vote respecting pluralityN first, otherwise allow wobbles.
-  -f                 : Only allow in frame deletions and insertions.
+  -f                 : Only allow in frame insertions.
+  -d                 : Remove gaps if they are >= pluralityN.
   -s                 : Single core mode with low memory footprint.
 ```
 
