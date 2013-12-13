@@ -43,9 +43,10 @@ public class SFRComputing {
             if (samRecord.getAlignmentBlocks().isEmpty() || samRecord.getSupplementaryAlignmentFlag()) {
                 return;
             }
-            int refStart = samRecord.getAlignmentStart() - 1;
-            boolean begin = true;
+            int refStart = samRecord.getUnclippedStart() - 1;
             int readStart = 0;
+            int insertion_offset = 0;
+            int deletion_offset = 0;
             for (CigarElement c : samRecord.getCigar().getCigarElements()) {
                 switch (c.getOperator()) {
                     case X:
@@ -56,7 +57,7 @@ public class SFRComputing {
                             System.exit(9);
                         }
                         for (int i = 0; i < c.getLength(); i++) {
-                            add(refStart + readStart, samRecord.getReadBases()[readStart], Globals.ALIGNMENT_MAP);
+                            add(refStart + readStart + deletion_offset, samRecord.getReadBases()[readStart + insertion_offset], Globals.ALIGNMENT_MAP);
                             readStart++;
                         }
                         break;
@@ -67,20 +68,19 @@ public class SFRComputing {
                         }
                         if (!Globals.FORCE_IN_FRAME || (Globals.FORCE_IN_FRAME && c.getLength() % 3 == 0)) {
                             for (int i = 0; i < c.getLength(); i++) {
-                                addInsert(refStart + readStart, i, samRecord.getReadBases()[readStart + i], Globals.INSERTION_MAP);
+                                addInsert(refStart + readStart + deletion_offset, i, samRecord.getReadBases()[readStart + i + insertion_offset], Globals.INSERTION_MAP);
                             }
                         }
-                        readStart += c.getLength();
+                        insertion_offset += c.getLength();
                         break;
                     case D:
                         for (int i = 0; i < c.getLength(); i++) {
-                            add(refStart + readStart + i, (byte) 45, Globals.ALIGNMENT_MAP);
+                            add(refStart + readStart + deletion_offset, (byte) 45, Globals.ALIGNMENT_MAP);
+                            deletion_offset++;
                         }
                         break;
                     case S:
-                        if (begin) {
-                            readStart += c.getLength();
-                        }
+                        readStart += c.getLength();
                         break;
                     case H:
                         break;
@@ -95,7 +95,6 @@ public class SFRComputing {
                     default:
                         break;
                 }
-                begin = false;
             }
 
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -108,10 +107,7 @@ public class SFRComputing {
         }
     }
 
-    private static void add(int position, byte base, Map<Integer, AtomicLongMap> alignmentMap) {
-        if (position == 916 && base == 65) {
-            System.err.println("");
-        }
+    public static void add(int position, byte base, Map<Integer, AtomicLongMap> alignmentMap) {
         try {
             if (!alignmentMap.containsKey(position)) {
                 alignmentMap.put(position, AtomicLongMap.create());

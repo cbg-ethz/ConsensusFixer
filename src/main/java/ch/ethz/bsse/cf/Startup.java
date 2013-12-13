@@ -21,9 +21,14 @@ import ch.ethz.bsse.cf.informationholder.Globals;
 import ch.ethz.bsse.cf.utils.Alignment;
 import ch.ethz.bsse.cf.utils.StatusUpdate;
 import ch.ethz.bsse.cf.utils.Utils;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.samtools.SAMFormatException;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -61,6 +66,12 @@ public class Startup {
     private boolean inFrame;
     @Option(name = "-d")
     private boolean rmDel;
+    @Option(name = "--stats")
+    private boolean stats;
+    @Option(name = "--silent")
+    private boolean silent;
+    @Option(name = "-mi")
+    private boolean maximumInsertion;
 
     private void setInputOutput() {
         if (output == null) {
@@ -87,13 +98,26 @@ public class Startup {
         Globals.SINGLE_CORE = this.singleCore;
         Globals.FORCE_IN_FRAME = this.inFrame;
         Globals.RM_DEL = this.rmDel;
+        Globals.STATS = this.stats;
+        Globals.MAXIMUM_INSERTION = this.maximumInsertion;
+        StatusUpdate.SILENT = this.silent;
     }
 
     private void parse() throws CmdLineException {
         if (this.input == null) {
             throw new CmdLineException("No input given");
         }
-        Utils.parseBAM(input);
+        if (this.input.endsWith(".fasta")) {
+            try {
+                Utils.parseFastaEntry(new BufferedReader(new FileReader(new File(input))));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Startup.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            Utils.parseBAM(input);
+        }
         StatusUpdate.getINSTANCE().println("Base count\t\t" + Globals.ALIGNMENT_MAP.size());
     }
 
@@ -124,8 +148,10 @@ public class Startup {
                 Globals.GENOME = genomes.keySet().iterator().next().toCharArray();
             }
             parse();
-            new Alignment().parseReads();
-            System.out.println("");
+            Alignment.saveConsensus();
+            if (stats) {
+                Alignment.saveStatistics();
+            }
         } catch (SAMFormatException e) {
             System.err.println("");
             System.err.println("Input file is not in BAM format.");
@@ -148,6 +174,7 @@ public class Startup {
             System.err.println("  -m \t\t\t: Majority vote respecting pluralityN first, otherwise allow wobbles.");
             System.err.println("  -f \t\t\t: Only allow in frame insertions in the consensus.");
             System.err.println("  -d \t\t\t: Remove gaps if they are >= pluralityN.");
+            System.err.println("  -mi \t\t\t: Only the insertion with the maximum frequency greater than mic is incorporated.");
             System.err.println("  -s \t\t\t: Single core mode with low memory footprint.");
             System.err.println("");
             System.err.println(" -------------------------");

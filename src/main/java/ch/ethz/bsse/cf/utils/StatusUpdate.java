@@ -32,6 +32,7 @@ public class StatusUpdate {
     private long start = System.currentTimeMillis();
     private final DateFormat df = new SimpleDateFormat("HH:mm:ss");
     private static final StatusUpdate INSTANCE = new StatusUpdate();
+    public static boolean SILENT;
 
     public static StatusUpdate getINSTANCE() {
         return INSTANCE;
@@ -42,21 +43,27 @@ public class StatusUpdate {
     }
 
     public void print(String s) {
-        String time = time();
-        if (!oldOut.equals(s) && !oldTime.equals(time)) {
-            this.oldOut = s;
-            this.oldTime = time;
-            System.out.print("\r" + time + " " + s);
+        if (!SILENT) {
+            String time = time();
+            if (!oldOut.equals(s) && !oldTime.equals(time)) {
+                this.oldOut = s;
+                this.oldTime = time;
+                System.out.print("\r" + time + " " + s);
+            }
         }
     }
 
     public void printForce(String s) {
-        this.oldOut = s;
-        System.out.print("\r" + time() + " " + s);
+        if (!SILENT) {
+            this.oldOut = s;
+            System.out.print("\r" + time() + " " + s);
+        }
     }
 
     public void println(String s) {
-        System.out.print("\n" + time() + " " + s);
+        if (!SILENT) {
+            System.out.print("\n" + time() + " " + s);
+        }
     }
 
     public String time() {

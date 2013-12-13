@@ -34,6 +34,7 @@ import net.sf.samtools.AbstractBAMFileIndex;
 import net.sf.samtools.BAMIndexMetaData;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMRecordIterator;
 
 /**
  * @author Armin Töpfer (armin.toepfer [at] gmail.com)
@@ -80,7 +81,6 @@ public class Utils {
 
     public static void parseBAM(String location) {
         File bam = new File(location);
-        System.out.println("");
         int size = 0;
         try (SAMFileReader sfr = new SAMFileReader(bam)) {
             AbstractBAMFileIndex index = (AbstractBAMFileIndex) sfr.getIndex();
@@ -104,36 +104,45 @@ public class Utils {
                 StatusUpdate.getINSTANCE().printForce("Computing\t\t100%");
             } else {
                 StatusUpdate.getINSTANCE().println("Loading BAM");
+
                 List<List<SAMRecord>> records = new LinkedList();
                 List<SAMRecord> tmp = new LinkedList<>();
-                int c = 0;
-                int sum = 0;
-                final int max = (int) Math.ceil(size / Runtime.getRuntime().availableProcessors());
-                for (SAMRecord r : sfr) {
-                    if (c++ > max) {
-                        records.add(tmp);
-                        tmp = new LinkedList<>();
-                        StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t" + Math.round(((double) sum * 100) / size) + "%");
-                        sum += c;
-                        c = 0;
-                    }
-                    tmp.add(r);
-                }
-                records.add(tmp);
-                StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t100%\n");
-                Parallel.ForEach(records, new LoopBody<List<SAMRecord>>() {
-                    @Override
-                    public void run(List<SAMRecord> l) {
-
-                        for (SAMRecord r : l) {
-                            SFRComputing.single(r);
+                SAMRecordIterator it = sfr.iterator();
+                for (int x = 0, y = 0; x < size; x += STEP_SIZE) {
+                    records.clear();
+                    tmp.clear();
+                    y = x + STEP_SIZE < size ? x + STEP_SIZE : size - 1;
+                    StatusUpdate.getINSTANCE().print("Loading BAM\t\t" + Math.round(((double) y * 100) / size) + "%");
+                    final int max = (int) Math.ceil((y - x) / Runtime.getRuntime().availableProcessors());
+                    int c = 0;
+                    do {
+                        if (++c % max == 0) {
+                            records.add(tmp);
+                            tmp = new LinkedList<>();
                         }
-                        StatusUpdate.getINSTANCE().printForce("Computing\t\t");
-                    }
-                });
+                        if (it.hasNext()) {
+                            tmp.add(it.next());
+                        } else {
+                            records.add(tmp);
+                            break;
+                        }
+                    } while (c < y - x);
+                    records.add(tmp);
+                    Parallel.ForEach(records, new LoopBody<List<SAMRecord>>() {
+                        @Override
+                        public void run(List<SAMRecord> l) {
+
+                            for (SAMRecord r : l) {
+                                SFRComputing.single(r);
+                            }
+                        }
+                    });
+                }
+                StatusUpdate.getINSTANCE().printForce("Loading BAM\t\t100%\n");
             }
         }
     }
+    public static final int STEP_SIZE = Runtime.getRuntime().availableProcessors() * 50000;
 
     public static Map<String, String> parseHaplotypeFile(String location) {
         Map<String, String> hapMap = new ConcurrentHashMap<>();
@@ -161,6 +170,24 @@ public class Utils {
         } catch (IOException | NumberFormatException e) {
         }
         return hapMap;
+    }
+    
+    /**
+     * Parses a single sequence of given BufferedReader.
+     *
+     * @param br BufferedReader
+     * @throws IOException
+     */
+    public static void parseFastaEntry(BufferedReader br) throws IOException, IllegalAccessError {
+        String strLine;
+        while ((strLine = br.readLine()) != null) {
+            if (!strLine.startsWith(">")) {
+                int i = 0;
+                for(char c : strLine.toCharArray()) {
+                    SFRComputing.add(i++, (byte) c, Globals.ALIGNMENT_MAP);
+                }
+            }
+        }
     }
 
     public static void error() {
