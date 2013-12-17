@@ -101,14 +101,17 @@ public class Alignment {
                         } else {
                             StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         }
-                        SortedSet<Integer> insertion_indices = new TreeSet<>(insertionMap.get(i).keySet());
-                        for (int j : insertion_indices) {
-                            if (insertionMap.get(i) != null && insertionMap.get(i).get(j) != null && !insertionMap.get(i).get(j).isEmpty()) {
-                                if (maximalInsertionPosition == i) {
-                                    consensusSequence.append(insertionMap.get(i).get(j));
-                                }
-                                System.out.print(insertionMap.get(i).get(j));
+                    } else {
+                        StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+                    }
+
+                    SortedSet<Integer> insertion_indices = new TreeSet<>(insertionMap.get(i).keySet());
+                    for (int j : insertion_indices) {
+                        if (insertionMap.get(i) != null && insertionMap.get(i).get(j) != null && !insertionMap.get(i).get(j).isEmpty()) {
+                            if (!Globals.MAXIMUM_INSERTION || (Globals.MAXIMUM_INSERTION && maximalInsertionPosition == i)) {
+                                consensusSequence.append(insertionMap.get(i).get(j));
                             }
+                            System.out.print(insertionMap.get(i).get(j));
                         }
                     }
                 }
