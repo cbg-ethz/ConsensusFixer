@@ -19,10 +19,17 @@ package ch.ethz.bsse.cf.utils;
 
 import ch.ethz.bsse.cf.informationholder.Globals;
 import com.google.common.util.concurrent.AtomicLongMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Armin Töpfer (armin.toepfer [at] gmail.com)
@@ -56,7 +63,7 @@ public class Alignment {
 
     public static void saveConsensus() {
 
-        Map<Integer, Map<Integer, String>> insertionMap = new HashMap<>();
+        Map<Integer, Map<Integer, String>> insertionMap = new ConcurrentHashMap<>();
         for (Map.Entry<Integer, AtomicLongMap> e : Globals.ALIGNMENT_MAP.entrySet()) {
             singleEntry(e, Globals.CONSENSUS_MAP, Globals.MIN_CONS_COV);
         }
@@ -65,21 +72,65 @@ public class Alignment {
         Map<Integer, Double> insertionCoverage = new HashMap<>();
         for (Map.Entry<Integer, Map<Integer, AtomicLongMap>> e : Globals.INSERTION_MAP.entrySet()) {
             int position = e.getKey();
+            if (position == 6639) {
+                System.err.println("");
+            }
             if (!insertionMap.containsKey(position)) {
                 insertionMap.put(position, new HashMap<Integer, String>());
             }
             double maximalInsertionCoverageLocal = 0;
+            double length = 0;
             for (Map.Entry<Integer, AtomicLongMap> e2 : e.getValue().entrySet()) {
-                maximalInsertionCoverageLocal += singleEntry(e2, insertionMap.get(position), Globals.MIN_INS_COV);
+                double cov = singleEntry(e2, insertionMap.get(position), Globals.MIN_INS_COV);
+                if (cov > Globals.MIN_INS_COV) {
+                    maximalInsertionCoverageLocal += cov;
+                    length++;
+                }
             }
-            maximalInsertionCoverageLocal /= e.getValue().size();
-            insertionCoverage.put(position, maximalInsertionCoverageLocal);
-            if (maximalInsertionCoverageLocal > maximalInsertionCoverage) {
-                maximalInsertionCoverage = maximalInsertionCoverageLocal;
-                maximalInsertionPosition = position;
+            maximalInsertionCoverageLocal /= length;
+            if (maximalInsertionCoverageLocal > Globals.MIN_INS_COV) {
+                insertionCoverage.put(position, maximalInsertionCoverageLocal);
+                if (Globals.MAXIMUM_INSERTION) {
+                    if (maximalInsertionCoverageLocal > maximalInsertionCoverage) {
+                        maximalInsertionCoverage = maximalInsertionCoverageLocal;
+                        maximalInsertionPosition = position;
+                    }
+                }
             }
         }
-
+        List<Integer> progressiveList = new ArrayList<>();
+        Map<Integer, Double> insertionCoverageCopy = new HashMap<>();
+        for (Map.Entry<Integer, Double> e : insertionCoverage.entrySet()) {
+            insertionCoverageCopy.put(e.getKey(), e.getValue());
+        }
+        if (Globals.PROGRESSIVE_INSERTION) {
+            Map<Integer, Double> positionToCoverage = SortMapByValue.sortByComparator(insertionCoverageCopy, SortMapByValue.DESC);
+            while (!positionToCoverage.isEmpty()) {
+                Iterator<Integer> it = positionToCoverage.keySet().iterator();
+                List<Integer> toBeRemoved = new LinkedList<>();
+                if (it.hasNext()) {
+                    Integer head = it.next();
+                    progressiveList.add(head);
+                    toBeRemoved.add(head);
+                    while (it.hasNext()) {
+                        Integer next = it.next();
+                        if (Math.abs(next - head) < Globals.PROGRESSIVE_INSERTION_SIZE) {
+                            toBeRemoved.add(next);
+                        }
+                    }
+                }
+                for (Integer i : toBeRemoved) {
+                    positionToCoverage.remove(i);
+                }
+            }
+        }
+        
+        for (Map.Entry<Integer, Map<Integer, String>> e : insertionMap.entrySet()) {
+            if (e.getValue() == null || e.getValue().isEmpty()) {
+                insertionMap.remove(e.getKey());
+            }
+        }
+        
         StatusUpdate.getINSTANCE().println("-+-");
         StringBuilder consensus = new StringBuilder();
         consensus.append(">CONSENSUS\n");
@@ -101,6 +152,12 @@ public class Alignment {
                         } else {
                             StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         }
+                    } else if (Globals.PROGRESSIVE_INSERTION) {
+                        if (progressiveList.contains(i)) {
+                            StatusUpdate.getINSTANCE().println("Insertion \t==>\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+                        } else {
+                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+                        }
                     } else {
                         StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                     }
@@ -108,7 +165,7 @@ public class Alignment {
                     SortedSet<Integer> insertion_indices = new TreeSet<>(insertionMap.get(i).keySet());
                     for (int j : insertion_indices) {
                         if (insertionMap.get(i) != null && insertionMap.get(i).get(j) != null && !insertionMap.get(i).get(j).isEmpty()) {
-                            if (!Globals.MAXIMUM_INSERTION || (Globals.MAXIMUM_INSERTION && maximalInsertionPosition == i)) {
+                            if ((!Globals.PROGRESSIVE_INSERTION && !Globals.MAXIMUM_INSERTION) || (Globals.PROGRESSIVE_INSERTION && progressiveList.contains(i)) || (Globals.MAXIMUM_INSERTION && maximalInsertionPosition == i)) {
                                 consensusSequence.append(insertionMap.get(i).get(j));
                             }
                             System.out.print(insertionMap.get(i).get(j));
@@ -128,6 +185,35 @@ public class Alignment {
         } else {
             System.out.println("");
         }
+    }
+
+    private static LinkedHashMap sortHashMapByValuesD(Map passedMap) {
+        List mapKeys = new ArrayList(passedMap.keySet());
+        List mapValues = new ArrayList(passedMap.values());
+        Collections.sort(mapValues, Collections.reverseOrder());
+        Collections.sort(mapKeys);
+
+        LinkedHashMap sortedMap = new LinkedHashMap();
+
+        Iterator valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            Object val = valueIt.next();
+            Iterator keyIt = mapKeys.iterator();
+
+            while (keyIt.hasNext()) {
+                Object key = keyIt.next();
+                String comp1 = passedMap.get(key).toString();
+                String comp2 = val.toString();
+
+                if (comp1.equals(comp2)) {
+                    passedMap.remove(key);
+                    mapKeys.remove(key);
+                    sortedMap.put((Integer) key, (Double) val);
+                    break;
+                }
+            }
+        }
+        return sortedMap;
     }
 
     private static double singleEntry(Map.Entry<Integer, AtomicLongMap> e, Map<Integer, String> consensusMap, int minimalCoverage) {

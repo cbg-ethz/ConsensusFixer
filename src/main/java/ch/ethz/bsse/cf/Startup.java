@@ -72,6 +72,10 @@ public class Startup {
     private boolean silent;
     @Option(name = "-mi")
     private boolean maximumInsertion;
+    @Option(name = "-pi")
+    private boolean progressiveInsertion;
+    @Option(name = "-pis")
+    private int progressiveInsertionSize = 300;
 
     private void setInputOutput() {
         if (output == null) {
@@ -100,6 +104,8 @@ public class Startup {
         Globals.RM_DEL = this.rmDel;
         Globals.STATS = this.stats;
         Globals.MAXIMUM_INSERTION = this.maximumInsertion;
+        Globals.PROGRESSIVE_INSERTION = this.progressiveInsertion;
+        Globals.PROGRESSIVE_INSERTION_SIZE = this.progressiveInsertionSize;
         StatusUpdate.SILENT = this.silent;
     }
 
@@ -175,6 +181,8 @@ public class Startup {
             System.err.println("  -f \t\t\t: Only allow in frame insertions in the consensus.");
             System.err.println("  -d \t\t\t: Remove gaps if they are >= pluralityN.");
             System.err.println("  -mi \t\t\t: Only the insertion with the maximum frequency greater than mic is incorporated.");
+            System.err.println("  -pi \t\t\t: Progressive insertion mode, respecting mic.");
+            System.err.println("  -pis INT\t\t: Window size for progressive insertion mode (default: 300).");
             System.err.println("  -s \t\t\t: Single core mode with low memory footprint.");
             System.err.println("");
             System.err.println(" -------------------------");

@@ -33,6 +33,7 @@ public class Globals {
     public static int ALIGNMENT_END = Integer.MIN_VALUE;
     public static String SAVEPATH;
     public static boolean MAXIMUM_INSERTION;
+    public static boolean PROGRESSIVE_INSERTION;
     public static boolean STATS;
     public static boolean FORCE_IN_FRAME;
     public static boolean MAJORITY_VOTE;
@@ -42,6 +43,7 @@ public class Globals {
     public static double PLURALITY_N;
     public static int MIN_CONS_COV;
     public static int MIN_INS_COV;
+    public static int PROGRESSIVE_INSERTION_SIZE;
     public static char[] GENOME;
     public static final Map<Integer, AtomicLongMap> ALIGNMENT_MAP = new ConcurrentHashMap<>();
     public static final Map<Integer, Map<Integer, AtomicLongMap>> INSERTION_MAP = new ConcurrentHashMap<>();
