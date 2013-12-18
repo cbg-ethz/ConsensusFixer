@@ -1,4 +1,4 @@
-# ![x](https://github.com/armintoepfer/ConsensusFixer/blob/master/CF_logo.png?raw=true) <b>C</b>onsensus<b>F</b>ixer<b> 
+# ![x](https://github.com/armintoepfer/ConsensusFixer/blob/master/CF_logo.png?raw=true) <b>C</b>onsensus<b>F</b>ixer <b>0.2</b>
 
 ### CONTENT:
 This java command line application computes a consensus sequence with in-frame insertions and ambiguous nucleotide (wobbles) from ultra deep next-generation sequencing alignments
@@ -18,6 +18,8 @@ Please get the latest binary at [releases](https://github.com/armintoepfer/Conse
  - Performs majority vote, respecting pluralityN, `-m`
  - Calls N if relative gap abundance is above `-pluralityN DOUBLE`
  - Remove gaps if they are >= pluralityN, `-d`
+ - Add only the major insertion, `-mi`
+ - Add all insertions with a distance of at least n bp `-pi` and `-pis INT`
  - Low memory footprint, but only single core, `-s`
 
 ### ISSUES:
@@ -39,6 +41,9 @@ Please open an issue on github or write me a [mail](https://github.com/armintoep
   -mic        INT    : Minimal coverage to call insertion.
   -plurality  DOUBLE : Minimal relative position-wise base occurence to integrate into wobble (default: 0.05).
   -pluralityN DOUBLE : Minimal relative position-wise gap occurence call N (default: 0.5).
+  -mi                : Only the insertion with the maximum frequency greater than mic is incorporated.
+  -pi                : Progressive insertion mode, respecting mic.
+  -pis        INT    : Window size for progressive insertion mode (default: 300).
   -m                 : Majority vote respecting pluralityN first, otherwise allow wobbles.
   -f                 : Only allow in frame insertions.
   -d                 : Remove gaps if they are >= pluralityN.
