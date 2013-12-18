@@ -1,4 +1,7 @@
-# ![x](https://github.com/armintoepfer/ConsensusFixer/blob/master/CF_logo.png?raw=true) <b>C</b>onsensus<b>F</b>ixer <b>0.2</b>
+<p align="center">
+  <img src="https://github.com/armintoepfer/ConsensusFixer/blob/master/CF_logo.png?raw=true" alt="ConsensusFixer logo"/>
+</p>
+<h1 align="center"><b>C</b>onsensus<b>F</b>ixer <b>0.2</b></h1>
 
 ### CONTENT:
 This java command line application computes a consensus sequence with in-frame insertions and ambiguous nucleotide (wobbles) from ultra deep next-generation sequencing alignments
