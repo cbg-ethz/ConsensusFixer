@@ -124,13 +124,13 @@ public class Alignment {
                 }
             }
         }
-        
+
         for (Map.Entry<Integer, Map<Integer, String>> e : insertionMap.entrySet()) {
             if (e.getValue() == null || e.getValue().isEmpty()) {
                 insertionMap.remove(e.getKey());
             }
         }
-        
+
         StatusUpdate.getINSTANCE().println("-+-");
         StringBuilder consensus = new StringBuilder();
         consensus.append(">CONSENSUS\n");
@@ -159,7 +159,9 @@ public class Alignment {
                             StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         }
                     } else {
-                        StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+                        if (insertionCoverage.containsKey(i) && insertionCoverage.get(i) != null) {
+                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+                        }
                     }
 
                     SortedSet<Integer> insertion_indices = new TreeSet<>(insertionMap.get(i).keySet());
@@ -266,15 +268,20 @@ public class Alignment {
 
     public static void saveStatistics() {
         StringBuilder sbA = new StringBuilder();
-        int L = Globals.GENOME.length;
+        int max = -1;
+        for (Integer i : Globals.ALIGNMENT_MAP.keySet()) {
+            if (i > max) {
+                max = i;
+            }
+        }
 
         sbA.append("Pos");
         for (byte b : BYTE_BASES) {
             sbA.append("\t").append((char) b);
         }
-        sbA.append("\tX\tE\n");
+        sbA.append("\tX\tE\tS\n");
 
-        for (int i = 0; i < L; i++) {
+        for (int i = 0; i <= max; i++) {
             if (!Globals.ALIGNMENT_MAP.containsKey(i)) {
                 continue;
             }
@@ -283,16 +290,18 @@ public class Alignment {
             for (byte b : BYTE_BASES) {
                 sum += Globals.ALIGNMENT_MAP.get(i).get(b);
             }
+            double simpsons = 0;
             double entropy = 0;
             for (byte b : BYTE_BASES) {
                 final double count = Globals.ALIGNMENT_MAP.get(i).get(b) / sum;
+                simpsons += Math.pow(count, 2);
                 sbA.append("\t").append(shorten(count));
                 if (count > 0) {
                     entropy -= count * Math.log(count) / Math.log(5);
                 }
             }
             sbA.append("\t").append((int) sum);
-            sbA.append("\t").append(shorten(entropy)).append("\n");
+            sbA.append("\t").append(shorten(entropy)).append("\t").append(shorten(simpsons)).append("\n");
         }
 
         StatusUpdate.getINSTANCE().print("Alignment summaries\t100%");

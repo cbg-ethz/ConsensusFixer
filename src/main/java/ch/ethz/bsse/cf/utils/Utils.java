@@ -113,7 +113,7 @@ public class Utils {
                     tmp.clear();
                     y = x + STEP_SIZE < size ? x + STEP_SIZE : size - 1;
                     StatusUpdate.getINSTANCE().print("Loading BAM\t\t" + Math.round(((double) y * 100) / size) + "%");
-                    final int max = (int) Math.ceil((y - x) / Runtime.getRuntime().availableProcessors());
+                    final int max = y - x < 100 ? 100 : (int) Math.ceil((y - x) / Runtime.getRuntime().availableProcessors());
                     int c = 0;
                     do {
                         if (++c % max == 0) {
