@@ -24,6 +24,7 @@ Please get the latest binary at [releases](https://github.com/armintoepfer/Conse
  - Add only the major insertion, `-mi`
  - Add all insertions with a distance of at least n bp `-pi` and `-pis INT`
  - Low memory footprint, but only single core, `-s`
+ - Position-wise statistics about the alignment and a list of deletions, `--stats`
 
 ### ISSUES:
 Please open an issue on github or write me a [mail](https://github.com/armintoepfer/ConsensusFixer/blob/master/README.md#contact)
