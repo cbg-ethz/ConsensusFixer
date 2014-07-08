@@ -306,6 +306,16 @@ public class Alignment {
 
         StatusUpdate.getINSTANCE().print("Alignment summaries\t100%");
         Utils.saveFile(Globals.SAVEPATH + "statistics.txt", sbA.toString());
+        
+        StringBuilder deletionSB = new StringBuilder();
+        deletionSB.append("pos\tlength\tnumber\n");
+        for (Map.Entry<Integer, AtomicLongMap> e : Globals.DELETION_MAP.entrySet()) {
+            for (Object o : e.getValue().asMap().keySet()) {
+                int i = (int) o;
+                deletionSB.append(e.getKey()+1).append("\t").append(i).append("\t").append(e.getValue().get(o)).append("\n");
+            }
+        }
+        Utils.saveFile(Globals.SAVEPATH + "deletions.txt", deletionSB.toString());
     }
 
     public static String shorten(double value) {

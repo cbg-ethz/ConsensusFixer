@@ -18,6 +18,7 @@
 package ch.ethz.bsse.cf.utils;
 
 import ch.ethz.bsse.cf.informationholder.Globals;
+import com.google.common.util.concurrent.AtomicLongMap;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -30,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import net.sf.samtools.AbstractBAMFileIndex;
 import net.sf.samtools.BAMIndexMetaData;
 import net.sf.samtools.SAMFileReader;
@@ -82,13 +85,20 @@ public class Utils {
     public static void parseBAM(String location) {
         File bam = new File(location);
         int size = 0;
+        int length = 0;
         try (SAMFileReader sfr = new SAMFileReader(bam)) {
             AbstractBAMFileIndex index = (AbstractBAMFileIndex) sfr.getIndex();
             int nRefs = index.getNumberOfReferences();
             for (int i = 0; i < nRefs; i++) {
                 BAMIndexMetaData meta = index.getMetaData(i);
                 size += meta.getAlignedRecordCount();
+                if (length < sfr.getFileHeader().getSequence(i).getSequenceLength()) {
+                    length = sfr.getFileHeader().getSequence(i).getSequenceLength();
+                }
             }
+        }
+        for (int i = 0; i < length; i++) {
+            Globals.DELETION_MAP.put(i, AtomicLongMap.create());
         }
         StatusUpdate.getINSTANCE().printForce("Read count\t\t" + size);
         try (SAMFileReader sfr = new SAMFileReader(bam)) {

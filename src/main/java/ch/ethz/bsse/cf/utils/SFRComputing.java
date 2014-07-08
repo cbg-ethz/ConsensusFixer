@@ -74,6 +74,7 @@ public class SFRComputing {
                         insertion_offset += c.getLength();
                         break;
                     case D:
+                        Globals.DELETION_MAP.get(refStart + deletion_offset+ readStart).incrementAndGet(c.getLength());
                         for (int i = 0; i < c.getLength(); i++) {
                             add(refStart + readStart + deletion_offset, (byte) 45, Globals.ALIGNMENT_MAP);
                             deletion_offset++;
@@ -96,7 +97,6 @@ public class SFRComputing {
                         break;
                 }
             }
-
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println();
             System.err.println(e);

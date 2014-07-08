@@ -138,8 +138,11 @@ public class Startup {
             for (String arg : args) {
                 sb.append(arg).append(" ");
             }
-            new File(this.output + File.separator + "support/").mkdirs();
-            Utils.appendFile(this.output + File.separator + "support/CMD", sb.toString() + "\n");
+            if (output.endsWith("/") || output.endsWith("\\")) {
+                Utils.appendFile(this.output + File.separator + ".CF_log", sb.toString() + "\n");
+            } else {
+                Utils.appendFile(System.getProperty("user.dir") + File.separator + ".CF_log", sb.toString() + "\n");
+            }
             setMainParameters();
 
             if (this.ref != null && !this.ref.isEmpty()) {

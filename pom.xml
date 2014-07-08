@@ -4,7 +4,7 @@
 
     <groupId>ch.ethz.bsse</groupId>
     <artifactId>consensusfixer</artifactId>
-    <version>0.2.1</version>
+    <version>0.3</version>
     <packaging>jar</packaging>
     <name>ConsensusFixer</name>
 
