@@ -2,15 +2,18 @@
   <img src="https://github.com/armintoepfer/ConsensusFixer/blob/master/CF_logo.png?raw=true" alt="ConsensusFixer logo"/>
 </p>
 <h1 align="center"><b>C</b>onsensus<b>F</b>ixer <b>0.3</b></h1>
+***
+<p align="center">Dr. Armin Töpfer, <a href="http://www.armintoepfer.com">armintoepfer.com</a></p>
+***
 
 ### CONTENT:
 This java command line application computes a consensus sequence with in-frame insertions and ambiguous nucleotide (wobbles) from ultra deep next-generation sequencing alignments. Provides a list of deletions.
 
 ### CITATION:
-If you use ConsensusFixer, please cite <i>Töpfer A.</i> https://github.com/armintoepfer/consensusfixer
+If you use ConsensusFixer, please cite <i>Töpfer A.</i> https://github.com/cbg-ethz/consensusfixer
 
 ### DOWNLOAD:
-Please get the latest binary at [releases](https://github.com/armintoepfer/ConsensusFixer/releases/latest).
+Please get the latest binary at [releases](https://github.com/cbg-ethz/ConsensusFixer/releases/latest).
 
 ### FEATURES:
  - Calls consensus sequence with a minimal coverage `-mcc INT`
@@ -27,7 +30,7 @@ Please get the latest binary at [releases](https://github.com/armintoepfer/Conse
  - Position-wise statistics about the alignment and a list of deletions, `--stats`
 
 ### ISSUES:
-Please open an issue on github or write me a [mail](https://github.com/armintoepfer/ConsensusFixer/blob/master/README.md#contact)
+Please open an issue on github
 
 - - -
 
@@ -83,7 +86,7 @@ Please open an issue on github or write me a [mail](https://github.com/armintoep
 ## CONTACT:
     Armin Töpfer
     armin.toepfer (at) gmail.com
-    http://www.bsse.ethz.ch/cbg/people/toepfera
+    http://www.armintoepfer.com
 
 ## LICENSE:
  GNU GPLv3 http://www.gnu.org/licenses/gpl-3.0
