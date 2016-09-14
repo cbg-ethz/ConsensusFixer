@@ -150,17 +150,17 @@ public class Alignment {
                         if (maximalInsertionPosition == i) {
                             StatusUpdate.getINSTANCE().println("Insertion \t==>\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         } else {
-                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+//                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         }
                     } else if (Globals.PROGRESSIVE_INSERTION) {
                         if (progressiveList.contains(i)) {
                             StatusUpdate.getINSTANCE().println("Insertion \t==>\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         } else {
-                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+//                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         }
                     } else {
                         if (insertionCoverage.containsKey(i) && insertionCoverage.get(i) != null) {
-                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
+//                            StatusUpdate.getINSTANCE().println("Insertion \t\t" + i + "\t" + insertionCoverage.get(i).intValue() + "\t");
                         }
                     }
 
@@ -169,8 +169,9 @@ public class Alignment {
                         if (insertionMap.get(i) != null && insertionMap.get(i).get(j) != null && !insertionMap.get(i).get(j).isEmpty()) {
                             if ((!Globals.PROGRESSIVE_INSERTION && !Globals.MAXIMUM_INSERTION) || (Globals.PROGRESSIVE_INSERTION && progressiveList.contains(i)) || (Globals.MAXIMUM_INSERTION && maximalInsertionPosition == i)) {
                                 consensusSequence.append(insertionMap.get(i).get(j));
+                                System.out.print(insertionMap.get(i).get(j));
                             }
-                            System.out.print(insertionMap.get(i).get(j));
+//                            System.out.print(insertionMap.get(i).get(j));
                         }
                     }
                 }
