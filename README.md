@@ -2,8 +2,11 @@
   <img src="https://github.com/armintoepfer/ConsensusFixer/blob/master/CF_logo.png?raw=true" alt="ConsensusFixer logo"/>
 </p>
 <h1 align="center"><b>C</b>onsensus<b>F</b>ixer <b>0.3</b></h1>
+
 ***
+
 <p align="center">Dr. Armin Töpfer, <a href="http://www.armintoepfer.com">armintoepfer.com</a></p>
+
 ***
 
 ### CONTENT:
@@ -58,16 +61,16 @@ Please open an issue on github
 ```
 
 ## Technical details
-#####To minimize the memory consumption and the number of full garbage collector executions, use:
+##### To minimize the memory consumption and the number of full garbage collector executions, use:
 `java -XX:NewRatio=9 -jar ConsensusFixer.jar`
 
-#####If your dataset is very large and you run out of memory, increase the heapspace with:
+##### If your dataset is very large and you run out of memory, increase the heapspace with:
 `java -XX:NewRatio=9 -Xms2G -Xmx10G -jar ConsensusFixer.jar`
 
-####On multicore systems:
+#### On multicore systems:
 `java -XX:+UseParallelGC -XX:NewRatio=9 -Xms2G -Xmx10G -jar ConsensusFixer.jar`
 
-####On multi-CPU systems:
+#### On multi-CPU systems:
 `java -XX:+UseParallelGC -XX:+UseNUMA -XX:NewRatio=9 -Xms2G -Xmx10G -jar ConsensusFixer.jar`
 
 ### Help:
