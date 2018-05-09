@@ -45,6 +45,7 @@ public class Globals {
     public static int MIN_CONS_COV;
     public static int MIN_INS_COV;
     public static int PROGRESSIVE_INSERTION_SIZE;
+    public static boolean INSERT_DASHES_FOR_REFERENCE;
     public static char[] GENOME;
     public static final Map<Integer, Map<Integer, Integer>> DELETION_MAP_PASSES = new ConcurrentHashMap<>();
     public static final Map<Integer, AtomicLongMap> DELETION_MAP = new ConcurrentHashMap<>();

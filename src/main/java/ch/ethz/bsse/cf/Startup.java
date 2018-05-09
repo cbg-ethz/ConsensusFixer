@@ -76,6 +76,8 @@ public class Startup {
     private boolean progressiveInsertion;
     @Option(name = "-pis")
     private int progressiveInsertionSize = 300;
+    @Option(name = "-dash")
+    private boolean dashForReference = false;
 
     private void setInputOutput() {
         if (output == null) {
@@ -106,6 +108,7 @@ public class Startup {
         Globals.MAXIMUM_INSERTION = this.maximumInsertion;
         Globals.PROGRESSIVE_INSERTION = this.progressiveInsertion;
         Globals.PROGRESSIVE_INSERTION_SIZE = this.progressiveInsertionSize;
+        Globals.INSERT_DASHES_FOR_REFERENCE = this.dashForReference;
         StatusUpdate.SILENT = this.silent;
     }
 
@@ -186,6 +189,7 @@ public class Startup {
             System.err.println("  -mi \t\t\t: Only the insertion with the maximum frequency greater than mic is incorporated.");
             System.err.println("  -pi \t\t\t: Progressive insertion mode, respecting mic.");
             System.err.println("  -pis INT\t\t: Window size for progressive insertion mode (default: 300).");
+            System.err.println("  -dash \t\t: Use '-' instead of bases from the reference.");
             System.err.println("  -s \t\t\t: Single core mode with low memory footprint.");
             System.err.println("");
             System.err.println(" -------------------------");
