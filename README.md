@@ -21,6 +21,7 @@ Please get the latest binary at [releases](https://github.com/cbg-ethz/Consensus
 ### FEATURES:
  - Calls consensus sequence with a minimal coverage `-mcc INT`
  - Integrates consensus sequence into given reference `-r ref.fasta`
+ - Optionally insert dashes '-' instead of bases from the reference.
  - Include insertions with a minimal coverage of `-mic INT`
  - Optionally, only include in-frame insertions `-f`
  - Calls amibiguous bases (wobbles) if relative base abundance is above `-plurality DOUBLE`
@@ -57,6 +58,7 @@ Please open an issue on github
   -m                 : Majority vote respecting pluralityN first, otherwise allow wobbles.
   -f                 : Only allow in frame insertions.
   -d                 : Remove gaps if they are >= pluralityN.
+  -dash              : Use '-' instead of bases from the reference.
   -s                 : Single core mode with low memory footprint.
 ```
 
