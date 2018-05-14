@@ -143,7 +143,11 @@ public class Alignment {
                 if (Globals.CONSENSUS_MAP.containsKey(i)) {
                     consensusSequence.append(Globals.CONSENSUS_MAP.get(i));
                 } else {
-                    consensusSequence.append(Globals.GENOME[i]);
+                    if (Globals.INSERT_DASHES_FOR_REFERENCE){
+                        consensusSequence.append('-');
+                    } else {
+                        consensusSequence.append(Globals.GENOME[i]);
+                    }
                 }
                 if (insertionMap.containsKey(i) && !insertionMap.get(i).isEmpty()) {
                     if (Globals.MAXIMUM_INSERTION) {

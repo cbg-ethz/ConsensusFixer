@@ -4,7 +4,7 @@
 
     <groupId>ch.ethz.bsse</groupId>
     <artifactId>consensusfixer</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
     <name>ConsensusFixer</name>
 
@@ -52,7 +52,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.dstovall</groupId>
+                <groupId>com.jolira</groupId>
                 <artifactId>onejar-maven-plugin</artifactId>
                 <version>1.4.4</version>
                 <executions>
