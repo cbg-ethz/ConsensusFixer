@@ -93,5 +93,9 @@ Please open an issue on github
     armin.toepfer (at) gmail.com
     http://www.armintoepfer.com
 
+## Contributors
+ - Armin Töpfer
+ - Nina A.H. Madsen
+
 ## LICENSE:
  GNU GPLv3 http://www.gnu.org/licenses/gpl-3.0
