@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://github.com/armintoepfer/ConsensusFixer/blob/master/CF_logo.png?raw=true" alt="ConsensusFixer logo"/>
 </p>
-<h1 align="center"><b>C</b>onsensus<b>F</b>ixer <b>0.3</b></h1>
+<h1 align="center"><b>C</b>onsensus<b>F</b>ixer <b>0.4</b></h1>
 
 ***
 
